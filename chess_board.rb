@@ -14,7 +14,7 @@ class Board
   def in_check?(color)
     king = find_king(color)
 
-    #  every piece of opposite color's legal moves
+    # check every piece of opposite color's legal moves
     @rows.each_with_index do |array, row|
       array.each_index do |col|
         next if self[[row,col]].nil? || self[[row,col]].color == color
@@ -32,6 +32,16 @@ class Board
         end
       end
     end
+  end
+
+  def pieces
+    #TODO flatten rows and select pieces (of color)
+  end
+
+  def move(start_pos, end_pos)
+    raise "No piece at start position" if self[start_pos].nil?
+    raise "Illegal move" if !self[start_pos].legal_moves.include?(end_pos)
+    self[start_pos].move(end_pos)
   end
 
   def set_board
