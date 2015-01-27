@@ -1,5 +1,8 @@
 class SteppingPiece < Piece
-  #Knight, King
+  def initialize(board, color, pos)
+    super(board, color, pos)
+  end
+
   def pos_moves
     @pos_moves = DELTAS.map do |delta|
       [delta[0] + pos[0], delta[1] + pos[1]]
@@ -11,6 +14,7 @@ class SteppingPiece < Piece
       next if board[pos].nil?
       board[pos].color == color
     end
+  end
 end
 
 class King < SteppingPiece
@@ -22,6 +26,8 @@ class King < SteppingPiece
 end
 
 class Knight < SteppingPiece
+
+
   DELTAS = [[-1, -2], [-2, -1], [-2, 1],
              [1, -2],           [2, -1],
              [-1, 2], [1, 2],   [2, 1]]
