@@ -1,4 +1,4 @@
-class SteppingPiece << Piece
+class SteppingPiece < Piece
   #Knight, King
   def pos_moves
     @pos_moves = DELTAS.map do |delta|
@@ -13,7 +13,7 @@ class SteppingPiece << Piece
     end
 end
 
-class King << SteppingPiece
+class King < SteppingPiece
   DELTAS = [[-1, -1], [-1, 0], [-1, 1],
              [0, -1],           [0, 1],
              [1, -1], [1, 0],   [1, 1]]
@@ -21,7 +21,7 @@ class King << SteppingPiece
 
 end
 
-class Knight << SteppingPiece
+class Knight < SteppingPiece
   DELTAS = [[-1, -2], [-2, -1], [-2, 1],
              [1, -2],           [2, -1],
              [-1, 2], [1, 2],   [2, 1]]

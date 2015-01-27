@@ -16,7 +16,7 @@ class Piece
   end
 end
 
-class SlidingPiece << Piece
+class SlidingPiece < Piece
   # Bishop, Queen, Rook
 
   def initialize(*directions) # :rows, :cols, :diags
@@ -27,7 +27,8 @@ class SlidingPiece << Piece
   def pos_moves
     get_direction
     directions.each do |direction|
-    if (:rows)
+    end
+
   end
 
   def get_direction
@@ -38,7 +39,7 @@ class SlidingPiece << Piece
     @direction_hash = {} #Hash.new{|h,k| h[k] = []}
     @direction_hash[:rows] = get_row
     @direction_hash[:cols] = get_col
-    @direction_hash[:diags]
+    @direction_hash[:diag1], @direction_hash[:diag2] = get_diags
   end
 
   def get_row
@@ -56,12 +57,13 @@ class SlidingPiece << Piece
   def get_diags
     diag1 = []
     diag2 = []
-    8.times do |row|
-      8.times do |col|
-        # ??
-      end
+    8.times do |num|
+      diag1 << [num, num]
+      diag1 << [-num, -num]
+      diag2 << [-num, num]
+      diag2 << [num, -num]
     end
-
+    [diag1.sort, diag2.sort]
 
   end
 
@@ -77,6 +79,6 @@ end
 # class Queen << SlidingPiece
 # end
 
-class Pawn << Piece
+class Pawn < Piece
 
 end
