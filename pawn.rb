@@ -1,11 +1,11 @@
 class Pawn < Piece
 
-  def initialize(board, color, pos)
-    super(board, color, pos)
+  def initialize(board, color, pos, symbol)
+    super(board, color, pos, symbol)
   end
 
   def legal_moves
-    modifier = color == :black ? -1 : 1
+    modifier = color == :white ? -1 : 1
     legal_moves_arr = []
 
     legal_moves_arr << [1 * modifier + pos[0], pos[1]]
@@ -14,7 +14,7 @@ class Pawn < Piece
       legal_moves_arr << [2 * modifier + pos[0], pos[1]]
     end
 
-    legal_moves_arr += attack_moves
+    legal_moves_arr.concat(attack_moves(modifier))
   end
 
   def starting_pos?
@@ -25,12 +25,12 @@ class Pawn < Piece
     end
   end
 
-  def attack_moves
+  def attack_moves(modifier)
     attack_moves = []
 
     attack_moves << [1 * modifier + pos[0], pos[1] + 1]
     attack_moves << [1 * modifier + pos[0], pos[1] - 1]
 
-    attack_moves.select!{ |pos| !board[pos].nil? && board[pos].color != color }
+    attack_moves.select{ |pos| !board[pos].nil? && board[pos].color != color }
   end
 end

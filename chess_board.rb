@@ -11,6 +11,29 @@ class Board
     set_board
   end
 
+  def in_check?(color)
+    king = find_king(color)
+
+    #  every piece of opposite color's legal moves
+    @rows.each_with_index do |array, row|
+      array.each_index do |col|
+        next if self[[row,col]].nil? || self[[row,col]].color == color
+          return true if self[[row,col]].legal_moves.include?(king)
+      end
+    end
+    false
+  end
+
+  def find_king(color)
+    @rows.each_with_index do |array, row|
+      array.each_index do |col|
+        if self[[row,col]].is_a?(King) && self[[row,col]].color == color
+          return [row,col]
+        end
+      end
+    end
+  end
+
   def set_board
     create_rooks
     create_knights
@@ -63,10 +86,16 @@ class Board
 
   def create_pawns
     @rows[1].each_index {|col| self[[1, col]] = Pawn.new(self, :black, [1,col], :P)}
-    @rows[6].each_index {|col| self[[1, col]] = Pawn.new(self, :white, [6,col], :p)}
+    @rows[6].each_index {|col| self[[6, col]] = Pawn.new(self, :white, [6,col], :p)}
   end
 
   def display_board
-
+    @rows.each_with_index do |array, row|
+      array.each_index do |col|
+        print self[[row,col]].nil? ? "_ " : "#{self[[row,col]].symbol} "
+      end
+    puts
+    end
+    nil
   end
 end

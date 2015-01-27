@@ -1,8 +1,8 @@
 class SlidingPiece < Piece
   # Bishop, Queen, Rook
 
-  def initialize(board, color, pos, *directions) # :rows, :cols, :diags
-    super(board, color, pos)
+  def initialize(board, color, pos, symbol, *directions) # :rows, :cols, :diags
+    super(board, color, pos, symbol)
     @directions = directions
   end
 
@@ -28,18 +28,23 @@ class SlidingPiece < Piece
 
   def pos_moves
     possible_moves = []
-    directions.each do |direction|
-      possible_moves << @direction_hash[direction]
+    direction_hash = create_deltas
+
+    @directions.each do |direction|
+      possible_moves << direction_hash[direction]
     end
+
     possible_moves
   end
 
   def create_deltas
-    @direction_hash = {} #Hash.new{|h,k| h[k] = []}
-    @direction_hash[:rows] = get_row
-    @direction_hash[:cols] = get_col
-    @direction_hash[:diags] = get_diags
+    direction_hash = {} #Hash.new{|h,k| h[k] = []}
 
+    direction_hash[:rows] = get_row
+    direction_hash[:cols] = get_col
+    direction_hash[:diags] = get_diags
+
+    direction_hash
   end
 
   def get_row
@@ -55,18 +60,18 @@ class SlidingPiece < Piece
   end
 
   def get_col
-    row = Array.new(2) {[]}
+    col = Array.new(2) {[]}
     board.rows.each_index do |row|
       row < pos[0] ? col[0] << [row, pos[1]] : col[1] << [row, pos[1]]
     end
 
-    # puts col[0] in order of closness
+    # puts col[0] in order of closeness
     col[0].reverse!
 
     col
   end
 
-  def get_diags(pos)
+  def get_diags
     diag = Array.new(4) {[]}
 
     (1..7).each do |num|

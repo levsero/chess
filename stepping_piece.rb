@@ -1,18 +1,19 @@
 class SteppingPiece < Piece
-  def initialize(board, color, pos)
-    super(board, color, pos)
+  def initialize(board, color, pos, symbol)
+    super(board, color, pos, symbol)
   end
 
   def pos_moves
-    @pos_moves = DELTAS.map do |delta|
+    @pos_moves = self.class::DELTAS.map do |delta|
       [delta[0] + pos[0], delta[1] + pos[1]]
+    end.select do |pos|
+      pos[0].between?(0,7) && pos[1].between?(0,7)
     end
   end
 
   def legal_moves
-    @legal_moves = pos_moves.filter do |pos|
-      next if board[pos].nil?
-      board[pos].color == color
+    @legal_moves = pos_moves.select do |pos|
+      board[pos].nil? || board[pos].color != color
     end
   end
 end
@@ -21,7 +22,6 @@ class King < SteppingPiece
   DELTAS = [[-1, -1], [-1, 0], [-1, 1],
              [0, -1],           [0, 1],
              [1, -1], [1, 0],   [1, 1]]
-
 
 end
 
