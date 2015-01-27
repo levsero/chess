@@ -12,4 +12,17 @@ class Piece
     self.pos = end_pos
   end
 
+
+  def move_into_check?(end_pos)
+    puts "move into check?"
+    dupe = board.dup
+
+    dupe[pos].move(end_pos)
+
+    dupe.in_check?(color)
+  end
+
+  def dup(new_board)
+    dup_piece = self.class.new(new_board, color, pos, symbol)
+  end
 end

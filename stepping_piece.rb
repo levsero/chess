@@ -12,9 +12,9 @@ class SteppingPiece < Piece
   end
 
   def legal_moves
-    @legal_moves = pos_moves.select do |pos|
+    legal_moves_array = pos_moves.select do |pos|
       board[pos].nil? || board[pos].color != color
-    end
+    end.select {|pos| !move_into_check?(pos) }
   end
 end
 

@@ -6,15 +6,23 @@ class Pawn < Piece
 
   def legal_moves
     modifier = color == :white ? -1 : 1
-    legal_moves_arr = []
+    legal_moves_array = []
 
-    legal_moves_arr << [1 * modifier + pos[0], pos[1]]
+    legal_moves_array << [1 * modifier + pos[0], pos[1]]
 
     if starting_pos?
-      legal_moves_arr << [2 * modifier + pos[0], pos[1]]
+      legal_moves_array << [2 * modifier + pos[0], pos[1]]
     end
 
-    legal_moves_arr.concat(attack_moves(modifier))
+    puts "pawn legal move method"
+    legal_moves_array.concat(attack_moves(modifier)).select do |pos|
+      !move_into_check?(pos)
+    end
+  end
+
+  def pos_moves
+    modifier = color == :white ? -1 : 1
+    attack_moves(modifier)
   end
 
   def starting_pos?

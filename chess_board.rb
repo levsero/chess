@@ -18,7 +18,7 @@ class Board
     @rows.each_with_index do |array, row|
       array.each_index do |col|
         next if self[[row,col]].nil? || self[[row,col]].color == color
-          return true if self[[row,col]].legal_moves.include?(king)
+          return true if self[[row,col]].pos_moves.include?(king)
       end
     end
     false
@@ -39,9 +39,25 @@ class Board
   end
 
   def move(start_pos, end_pos)
+    puts "board move method"
     raise "No piece at start position" if self[start_pos].nil?
     raise "Illegal move" if !self[start_pos].legal_moves.include?(end_pos)
     self[start_pos].move(end_pos)
+    # update all legal_move_array
+
+  end
+
+  def dup
+    dupe = Board.new
+
+    @rows.each_with_index do |array, row|
+      array.each_index do |col|
+        next if self[[row,col]].nil?
+        dupe[[row,col]] = self[[row,col]].dup(dupe)
+      end
+    end
+
+    dupe
   end
 
   def set_board

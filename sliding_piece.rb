@@ -3,18 +3,19 @@ class SlidingPiece < Piece
 
   def initialize(board, color, pos, symbol, *directions) # :rows, :cols, :diags
     super(board, color, pos, symbol)
-    @directions = directions
+    @directions = []
+    directions.each{ |dir| @directions << dir }
   end
 
   def legal_moves
-    legal_moves_arr = []
+    @legal_moves_array = []
     pos_moves.each do |direction_array|
       direction_array.each do |one_direction_arr|
         one_direction_arr.each do |tile|
           if board[tile].nil?
-            legal_moves_arr << tile
+            @legal_moves_array << tile
           elsif board[tile].color != color
-            legal_moves_arr << tile
+            @legal_moves_array << tile
             break
           else
             break
@@ -23,7 +24,7 @@ class SlidingPiece < Piece
       end
     end
 
-    legal_moves_arr
+    @legal_moves_array.select {|pos| !move_into_check?(pos) }
   end
 
   def pos_moves
@@ -88,6 +89,10 @@ class SlidingPiece < Piece
     diag[3].select!{|el| el[0].between?(0,7) && el[1].between?(0,7)}
 
     diag
+  end
+
+  def dup(new_board)
+    dup_piece = self.class.new(new_board, color, pos, symbol, *@directions)
   end
 
 end
