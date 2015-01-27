@@ -1,7 +1,7 @@
 class SlidingPiece < Piece
   # Bishop, Queen, Rook
 
-  def initialize(*directions) # :rows, :cols, :diag
+  def initialize(board, color, pos, *directions) # :rows, :cols, :diags
     super(board, color, pos)
     @directions = directions
   end
@@ -38,7 +38,7 @@ class SlidingPiece < Piece
     @direction_hash = {} #Hash.new{|h,k| h[k] = []}
     @direction_hash[:rows] = get_row
     @direction_hash[:cols] = get_col
-    @direction_hash[:diag1], @direction_hash[:diag2] = get_diags
+    @direction_hash[:diags] = get_diags
 
   end
 
