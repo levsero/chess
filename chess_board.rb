@@ -33,7 +33,7 @@ class Board
     options[:color] = options[:color] == :black ? :white : :black if options[:opp]
 
     #flatten rows and select pieces (of color or opposite)
-    # test = 
+    `# test = `
     @rows.flatten.select {|tile| !tile.nil? &&
         (tile.color == options[:color] || options[:color] == :all) }
     # test.each {|tile| print tile.symbol}
@@ -52,23 +52,7 @@ class Board
   def dup
     dupe = Board.new
 
-
-    # @rows.flatten.each do |tile|
-    #   if tile.nil?
-    #     dupe[tile.pos] = nil
-    #   else
-    #     dupe[tile.pos] = self[tile.pos].dup(dupe)
-    #   end
-    # end
-    @rows.each_with_index do |array, row|
-      array.each_index do |col|
-        if self[[row,col]].nil?
-          dupe[[row,col]] = nil
-        else
-          dupe[[row,col]] = self[[row,col]].dup(dupe)
-        end
-      end
-    end
+    pieces.each { |piece| dupe[piece.pos] = piece.dup(dupe) }
 
     dupe
   end
