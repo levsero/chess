@@ -20,7 +20,7 @@ class Piece
     dupe = board.dup
 
     dupe[pos].move(end_pos)
-    dupe.display_board
+    
     dupe.in_check?(dupe[end_pos].color)
   end
 

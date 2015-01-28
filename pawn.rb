@@ -14,6 +14,9 @@ class Pawn < Piece
       legal_moves_array << [2 * modifier + pos[0], pos[1]]
     end
 
+    # only move to nil squares
+    legal_moves_array.select!{|pos| board[pos].nil?}
+
     legal_moves_array.concat(attack_moves(modifier)).select do |pos|
       !move_into_check?(pos)
     end

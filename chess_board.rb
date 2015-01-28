@@ -11,6 +11,21 @@ class Board
     set_board if set == true
   end
 
+  def game_over?(color)
+    pieces(:color => color).each do |piece|
+      if !piece.legal_moves.empty?
+        puts piece.symbol
+        return false
+      end
+    end
+    true
+  end
+
+  def check_mate?(color)
+    game_over?(color) && in_check?(color)
+  end
+
+
   def in_check?(color)
     king = find_king(color)
 
@@ -41,7 +56,6 @@ class Board
   end
 
   def move(start_pos, end_pos)
-    puts "board move method"
     raise "No piece at start position" if self[start_pos].nil?
     raise "Illegal move" if !self[start_pos].legal_moves.include?(end_pos)
     self[start_pos].move(end_pos)
