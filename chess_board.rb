@@ -1,7 +1,9 @@
+# encoding: utf-8
 require_relative 'piece'
 require_relative 'sliding_piece'
 require_relative 'stepping_piece'
 require_relative 'pawn'
+require 'colorize'
 
 class Board
   attr_accessor :rows
@@ -14,7 +16,7 @@ class Board
   def game_over?(color)
     pieces(:color => color).each do |piece|
       if !piece.legal_moves.empty?
-        puts piece.symbol
+        #p piece.symbol
         return false
       end
     end
@@ -30,8 +32,8 @@ class Board
     king = find_king(color)
 
     # check every piece of opposite color's legal moves
-    pieces(:color => color, :opp => true).each do
-      |piece| return true if piece.pos_moves.include?(king)
+    pieces(:color => color, :opp => true).each do |piece|
+      return true if piece.pos_moves.include?(king)
     end
 
     false
@@ -55,12 +57,12 @@ class Board
     # nil
   end
 
-  def move(start_pos, end_pos)
-    raise "No piece at start position" if self[start_pos].nil?
-    raise "Illegal move" if !self[start_pos].legal_moves.include?(end_pos)
-    self[start_pos].move(end_pos)
-    # update all legal_move_array
+  def move(start_pos, end_pos, turn_color)
+    raise ArgumentError.new("No piece at start position") if self[start_pos].nil?
+    raise ArgumentError.new("Illegal move") if !self[start_pos].legal_moves.include?(end_pos)
+    raise ArgumentError.new("Not your piece") if self[start_pos].color != turn_color
 
+    self[start_pos].move(end_pos)
   end
 
   def dup
@@ -91,45 +93,54 @@ class Board
   end
 
   def create_rooks
-    self[[0,0]] = SlidingPiece.new(self, :black, [0,0], :R, :rows, :cols)
-    self[[0,7]] = SlidingPiece.new(self, :black, [0,7], :R, :rows, :cols)
-    self[[7,0]] = SlidingPiece.new(self, :white, [7,0], :r, :rows, :cols)
-    self[[7,7]] = SlidingPiece.new(self, :white, [7,7], :r, :rows, :cols)
+    self[[0,0]] = SlidingPiece.new(self, :black, [0,0], "\u{265C}", :rows, :cols)
+    self[[0,7]] = SlidingPiece.new(self, :black, [0,7], "\u{265C}", :rows, :cols)
+    self[[7,0]] = SlidingPiece.new(self, :white, [7,0], "\u{2656}", :rows, :cols)
+    self[[7,7]] = SlidingPiece.new(self, :white, [7,7], "\u{2656}", :rows, :cols)
   end
 
   def create_knights
-    self[[0,1]] = Knight.new(self, :black, [0,1], :N)
-    self[[0,6]] = Knight.new(self, :black, [0,6], :N)
-    self[[7,1]] = Knight.new(self, :white, [7,1], :n)
-    self[[7,6]] = Knight.new(self, :white, [7,6], :n)
+    self[[0,1]] = Knight.new(self, :black, [0,1], "\u{265E}")
+    self[[0,6]] = Knight.new(self, :black, [0,6], "\u{265E}")
+    self[[7,1]] = Knight.new(self, :white, [7,1], "\u{2658}")
+    self[[7,6]] = Knight.new(self, :white, [7,6], "\u{2658}")
   end
 
   def create_bishops
-    self[[0,2]] = SlidingPiece.new(self, :black, [0,2], :B, :diags)
-    self[[0,5]] = SlidingPiece.new(self, :black, [0,5], :B, :diags)
-    self[[7,2]] = SlidingPiece.new(self, :white, [7,2], :b, :diags)
-    self[[7,5]] = SlidingPiece.new(self, :white, [7,5], :b, :diags)
+    self[[0,2]] = SlidingPiece.new(self, :black, [0,2], "\u{265D}", :diags)
+    self[[0,5]] = SlidingPiece.new(self, :black, [0,5], "\u{265D}", :diags)
+    self[[7,2]] = SlidingPiece.new(self, :white, [7,2], "\u{2657}", :diags)
+    self[[7,5]] = SlidingPiece.new(self, :white, [7,5], "\u{2657}", :diags)
   end
 
   def create_queens
-    self[[0,3]] = SlidingPiece.new(self, :black, [0,3], :Q, :rows, :cols, :diags)
-    self[[7,3]] = SlidingPiece.new(self, :white, [7,3], :q, :rows, :cols, :diags)
+    self[[0,3]] = SlidingPiece.new(self, :black, [0,3], "\u{265B}", :rows, :cols, :diags)
+    self[[7,3]] = SlidingPiece.new(self, :white, [7,3], "\u{2655}", :rows, :cols, :diags)
   end
 
   def create_kings
-    self[[0,4]] = King.new(self, :black, [0,4], :K)
-    self[[7,4]] = King.new(self, :white, [7,4], :k)
+    self[[0,4]] = King.new(self, :black, [0,4], "\u{265A}")
+    self[[7,4]] = King.new(self, :white, [7,4], "\u{2654}")
   end
 
   def create_pawns
-    @rows[1].each_index {|col| self[[1, col]] = Pawn.new(self, :black, [1,col], :P)}
-    @rows[6].each_index {|col| self[[6, col]] = Pawn.new(self, :white, [6,col], :p)}
+    @rows[1].each_index {|col| self[[1, col]] = Pawn.new(self, :black, [1,col], "\u{265F}")}
+    @rows[6].each_index {|col| self[[6, col]] = Pawn.new(self, :white, [6,col], "\u{2659}")}
   end
 
   def display_board
+    puts
+    shade = :light_blue
     @rows.each_with_index do |array, row|
+      shade = shade == :light_blue ? :light_green : :light_blue
       array.each_index do |col|
-        print self[[row,col]].nil? ? "_ " : "#{self[[row,col]].symbol} "
+
+        if self[[row,col]].nil?
+          print "   ".colorize(:background => shade)
+        else
+          print " #{self[[row,col]].symbol} ".colorize(:background => shade)
+        end
+        shade = shade == :light_blue ? :light_green : :light_blue
       end
     puts
     end

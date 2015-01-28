@@ -1,10 +1,11 @@
+# encoding: utf-8
 class SlidingPiece < Piece
   # Bishop, Queen, Rook
 
   def initialize(board, color, pos, symbol, *directions) # :rows, :cols, :diags
     super(board, color, pos, symbol)
-    @directions = []
-    directions.each{ |dir| @directions << dir }
+    @deltas = []
+    directions.each{ |dir| @deltas << dir }
   end
 
   def pos_moves
@@ -28,20 +29,28 @@ class SlidingPiece < Piece
     possible_moves
   end
 
+  def legal_moves
+    pos_moves.select {|pos_pos| !move_into_check?(pos_pos) }
+  end
+
   def create_deltas
     direction_hash = {} #Hash.new{|h,k| h[k] = []}
 
-    direction_hash[:rows] = get_row
-    direction_hash[:cols] = get_col
-    direction_hash[:diags] = get_diags
+    direction_hash[:rows] = get_row if @deltas.include?(:rows)
+    direction_hash[:cols] = get_col if @deltas.include?(:cols)
+    direction_hash[:diags] = get_diags if @deltas.include?(:diags)
 
     direction_hash
   end
 
   def get_row
     row = Array.new(2) {[]}
-    board.rows[pos[0]].each_index do |col|
-      col < pos[1] ? row[0] << [pos[0], col] : row[1] << [pos[0], col]
+    @board.rows[@pos[0]].each_index do |col|
+      if col < @pos[1]
+        row[0] << [@pos[0], col]
+      elsif col > @pos[1]
+        row[1] << [@pos[0], col]
+      end
     end
 
     # puts row[0] in order of closness
@@ -52,8 +61,12 @@ class SlidingPiece < Piece
 
   def get_col
     col = Array.new(2) {[]}
-    board.rows.each_index do |row|
-      row < pos[0] ? col[0] << [row, pos[1]] : col[1] << [row, pos[1]]
+    @board.rows.each_index do |row|
+      if row < @pos[0]
+        col[0] << [row, pos[1]]
+      elsif row > @pos[0]
+        col[1] << [row, pos[1]]
+      end
     end
 
     # puts col[0] in order of closeness
@@ -82,7 +95,7 @@ class SlidingPiece < Piece
   end
 
   def dup(new_board)
-    dup_piece = self.class.new(new_board, color, pos, symbol, *@directions)
+    dup_piece = self.class.new(new_board, color, pos, symbol, *@deltas)
   end
 
 end
