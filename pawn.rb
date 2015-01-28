@@ -4,7 +4,7 @@ class Pawn < Piece
     super(board, color, pos, symbol)
   end
 
-  def legal_moves
+  def legal_moves # overriding piece method
     modifier = color == :white ? -1 : 1
     legal_moves_array = []
 
@@ -14,13 +14,12 @@ class Pawn < Piece
       legal_moves_array << [2 * modifier + pos[0], pos[1]]
     end
 
-    puts "pawn legal move method"
     legal_moves_array.concat(attack_moves(modifier)).select do |pos|
       !move_into_check?(pos)
     end
   end
 
-  def pos_moves
+  def pos_moves # used for checking for check
     modifier = color == :white ? -1 : 1
     attack_moves(modifier)
   end

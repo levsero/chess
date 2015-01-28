@@ -7,32 +7,22 @@ class SlidingPiece < Piece
     directions.each{ |dir| @directions << dir }
   end
 
-  def legal_moves
-    @legal_moves_array = []
-    pos_moves.each do |direction_array|
-      direction_array.each do |one_direction_arr|
-        one_direction_arr.each do |tile|
+  def pos_moves
+    possible_moves = []
+
+    create_deltas.each_value do | delta |
+      delta.each do | one_direction |
+        one_direction.each do |tile|
           if board[tile].nil?
-            @legal_moves_array << tile
+            possible_moves << tile
           elsif board[tile].color != color
-            @legal_moves_array << tile
+            possible_moves << tile
             break
           else
             break
           end
         end
       end
-    end
-
-    @legal_moves_array.select {|pos| !move_into_check?(pos) }
-  end
-
-  def pos_moves
-    possible_moves = []
-    direction_hash = create_deltas
-
-    @directions.each do |direction|
-      possible_moves << direction_hash[direction]
     end
 
     possible_moves

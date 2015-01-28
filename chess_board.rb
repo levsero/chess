@@ -15,27 +15,22 @@ class Board
     king = find_king(color)
 
     # check every piece of opposite color's legal moves
-    @rows.each_with_index do |array, row|
-      array.each_index do |col|
-        next if self[[row,col]].nil? || self[[row,col]].color == color
-          return true if self[[row,col]].pos_moves.include?(king)
-      end
+    pieces(color, true).each do
+      |piece| return true if piece.pos_moves.include?(king)
     end
+
     false
   end
 
   def find_king(color)
-    @rows.each_with_index do |array, row|
-      array.each_index do |col|
-        if self[[row,col]].is_a?(King) && self[[row,col]].color == color
-          return [row,col]
-        end
-      end
-    end
+    pieces(color).each {|piece| return piece.pos if piece.is_a?(King) }
   end
 
-  def pieces
-    #TODO flatten rows and select pieces (of color)
+  def pieces(color, opp = false)
+    color = color == :black ? :white : :black if opp
+
+    #flatten rows and select pieces (of color or opposite)
+    @rows.flatten.select {|tile| !tile.nil? && tile.color == color }
   end
 
   def move(start_pos, end_pos)
@@ -50,10 +45,20 @@ class Board
   def dup
     dupe = Board.new
 
+    # @rows.flatten.each do |tile|
+    #   if tile.nil?
+    #     dupe[tile.pos] = nil
+    #   else
+    #     dupe[tile.pos] = self[tile.pos].dup(dupe)
+    #   end
+    # end
     @rows.each_with_index do |array, row|
       array.each_index do |col|
-        next if self[[row,col]].nil?
-        dupe[[row,col]] = self[[row,col]].dup(dupe)
+        if self[[row,col]].nil?
+          dupe[[row,col]] = nil
+        else
+          dupe[[row,col]] = self[[row,col]].dup(dupe)
+        end
       end
     end
 
