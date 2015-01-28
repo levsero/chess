@@ -6,16 +6,16 @@ require_relative 'pawn'
 class Board
   attr_accessor :rows
 
-  def initialize
+  def initialize(set = false)
     @rows = Array.new(8){Array.new(8)}
-    set_board
+    set_board if set == true
   end
 
   def in_check?(color)
     king = find_king(color)
 
     # check every piece of opposite color's legal moves
-    pieces(color, true).each do
+    pieces(:color => color, :opp => true).each do
       |piece| return true if piece.pos_moves.include?(king)
     end
 
@@ -23,14 +23,21 @@ class Board
   end
 
   def find_king(color)
-    pieces(color).each {|piece| return piece.pos if piece.is_a?(King) }
+    pieces(:color => color).each {|piece| return piece.pos if piece.is_a?(King) }
   end
 
-  def pieces(color, opp = false)
-    color = color == :black ? :white : :black if opp
+  def pieces(options = {})
+    default = {:color => :all, :opp => false}
+    options = default.merge(options)
+
+    options[:color] = options[:color] == :black ? :white : :black if options[:opp]
 
     #flatten rows and select pieces (of color or opposite)
-    @rows.flatten.select {|tile| !tile.nil? && tile.color == color }
+    # test = 
+    @rows.flatten.select {|tile| !tile.nil? &&
+        (tile.color == options[:color] || options[:color] == :all) }
+    # test.each {|tile| print tile.symbol}
+    # nil
   end
 
   def move(start_pos, end_pos)
@@ -44,6 +51,7 @@ class Board
 
   def dup
     dupe = Board.new
+
 
     # @rows.flatten.each do |tile|
     #   if tile.nil?
