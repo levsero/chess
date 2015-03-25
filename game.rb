@@ -1,5 +1,6 @@
 # encoding: utf-8
-require_relative 'chess_board'
+require_relative 'board'
+require_relative 'computer_player'
 
 class Game
   attr_reader :board, :player1, :player2
@@ -96,46 +97,5 @@ class HumanPlayer
     input[0], input[1] = 8 - input[1].to_i, input[0].downcase.ord - 97
 
     input
-  end
-end
-
-class ComputerPlayer
-  attr_accessor :color
-
-  def initialize(color, board)
-    @board = board
-    @color = color
-  end
-
-  def get_move
-    return find_checkmate unless find_checkmate.nil?
-
-    piece = select_random_piece
-    move = select_random_move(piece)
-
-    [piece.pos, move]
-  end
-
-  def select_random_piece
-    @board.pieces(:color => @color).select{|piece| piece.legal_moves.any?}.sample
-  end
-
-  def select_random_move(piece)
-    piece.legal_moves.sample
-  end
-
-  def find_checkmate
-    @board.pieces(:color => color).each do |piece|
-      piece.legal_moves.each do |end_move|
-
-        dupe = @board.dup
-
-        dupe[piece.pos].move(end_move)
-
-        opp_color = color == :white ? :black : :white
-        return [piece.pos, end_move] if dupe.check_mate?(opp_color)
-      end
-    end
-    nil
   end
 end

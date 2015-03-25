@@ -1,5 +1,5 @@
 # encoding: utf-8
-class SlidingPiece < Piece
+class Slideable < Piece
   # Bishop, Queen, Rook
 
   def initialize(board, color, pos, symbol, *directions) # :rows, :cols, :diags
@@ -12,8 +12,8 @@ class SlidingPiece < Piece
     possible_moves = []
 
     create_deltas.each_value do | delta |
-      delta.each do | one_direction |
-        one_direction.each do |tile|
+      delta.each do | direction |
+        direction.each do |tile|
           if board[tile].nil?
             possible_moves << tile
           elsif board[tile].color != color

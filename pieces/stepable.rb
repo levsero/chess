@@ -1,5 +1,5 @@
 # encoding: utf-8
-class SteppingPiece < Piece
+class Stepable < Piece
   def initialize(board, color, pos, symbol)
     super(board, color, pos, symbol)
   end
@@ -17,21 +17,4 @@ class SteppingPiece < Piece
   def legal_moves
     pos_moves.select {|pos_pos| !move_into_check?(pos_pos) }
   end
-
-end
-
-class King < SteppingPiece
-  DELTAS = [[-1, -1], [-1, 0], [-1, 1],
-             [0, -1],           [0, 1],
-             [1, -1], [1, 0],   [1, 1]]
-
-end
-
-class Knight < SteppingPiece
-
-
-  DELTAS = [[-1, -2], [-2, -1], [-2, 1],
-             [1, -2],           [2, -1],
-             [-1, 2], [1, 2],   [2, 1]]
-
 end

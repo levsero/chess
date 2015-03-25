@@ -64,9 +64,9 @@ class Pawn < Piece
   def move(end_pos)
     super(end_pos)
     if @pos[0] == 7 && color == :black
-      board[@pos] = SlidingPiece.new(@board, :black, pos, "\u{265B}", :rows, :cols, :diags)
+      board[@pos] = Slideable.new(@board, :black, pos, "\u{265B}", :rows, :cols, :diags)
     elsif @pos[0] == 0 && color == :white
-      board[@pos] = SlidingPiece.new(@board, :white, pos, "\u{2655}", :rows, :cols, :diags)
+      board[@pos] = Slideable.new(@board, :white, pos, "\u{2655}", :rows, :cols, :diags)
     end
   end
 

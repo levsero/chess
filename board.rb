@@ -1,8 +1,5 @@
 # encoding: utf-8
-require_relative 'piece'
-require_relative 'sliding_piece'
-require_relative 'stepping_piece'
-require_relative 'pawn'
+require_relative 'pieces'
 require 'colorize'
 
 class Board
@@ -49,12 +46,9 @@ class Board
 
     options[:color] = options[:color] == :black ? :white : :black if options[:opp]
 
-    #flatten rows and select pieces (of color or opposite)
-    `# test = `
     @rows.flatten.select {|tile| !tile.nil? &&
         (tile.color == options[:color] || options[:color] == :all) }
-    # test.each {|tile| print tile.symbol}
-    # nil
+
   end
 
   def move(start_pos, end_pos, turn_color)
@@ -93,29 +87,28 @@ class Board
   end
 
   def create_rooks
-    self[[0,0]] = SlidingPiece.new(self, :black, [0,0], "\u{265C}", :rows, :cols)
-    self[[0,7]] = SlidingPiece.new(self, :black, [0,7], "\u{265C}", :rows, :cols)
-    self[[7,0]] = SlidingPiece.new(self, :white, [7,0], "\u{2656}", :rows, :cols)
-    self[[7,7]] = SlidingPiece.new(self, :white, [7,7], "\u{2656}", :rows, :cols)
+    [[0,0], [0,7], [7,0], [7,7]].each do |pos|
+      color = pos[0] == 0 ? :black  : :white
+      self[pos] = Slideable.new(self, color, [7,7], "\u{2656}", :rows, :cols)
+    end
   end
 
   def create_knights
-    self[[0,1]] = Knight.new(self, :black, [0,1], "\u{265E}")
-    self[[0,6]] = Knight.new(self, :black, [0,6], "\u{265E}")
-    self[[7,1]] = Knight.new(self, :white, [7,1], "\u{2658}")
-    self[[7,6]] = Knight.new(self, :white, [7,6], "\u{2658}")
+    [[0,1], [0,6], [7,1], [7,6]].each do |pos|
+      color = pos[0] == 0 ? :black  : :white
+      board[pos] = Knight.new(self, color, [0,1], "\u{265E}")
+    end
   end
 
   def create_bishops
-    self[[0,2]] = SlidingPiece.new(self, :black, [0,2], "\u{265D}", :diags)
-    self[[0,5]] = SlidingPiece.new(self, :black, [0,5], "\u{265D}", :diags)
-    self[[7,2]] = SlidingPiece.new(self, :white, [7,2], "\u{2657}", :diags)
-    self[[7,5]] = SlidingPiece.new(self, :white, [7,5], "\u{2657}", :diags)
+    [[0,2], [0,5], [7,2], [7,5]].each do |pos|
+    color = pos[0] == 0 ? :black  : :white
+    self[pos] = Slideable.new(self, color, [7,5], "\u{2657}", :diags)
   end
 
   def create_queens
-    self[[0,3]] = SlidingPiece.new(self, :black, [0,3], "\u{265B}", :rows, :cols, :diags)
-    self[[7,3]] = SlidingPiece.new(self, :white, [7,3], "\u{2655}", :rows, :cols, :diags)
+    self[[0,3]] = Slideable.new(self, :black, [0,3], "\u{265B}", :rows, :cols, :diags)
+    self[[7,3]] = Slideable.new(self, :white, [7,3], "\u{2655}", :rows, :cols, :diags)
   end
 
   def create_kings
@@ -146,4 +139,5 @@ class Board
     end
     nil
   end
+  nil
 end
