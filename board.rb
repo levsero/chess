@@ -46,9 +46,8 @@ class Board
 
     options[:color] = options[:color] == :black ? :white : :black if options[:opp]
 
-    @rows.flatten.select {|tile| !tile.nil? &&
+    @rows.flatten.select { †|tile| !tile.nil? &&
         (tile.color == options[:color] || options[:color] == :all) }
-
   end
 
   def move(start_pos, end_pos, turn_color)
@@ -61,9 +60,7 @@ class Board
 
   def dup
     dupe = Board.new
-
     pieces.each { |piece| dupe[piece.pos] = piece.dup(dupe) }
-
     dupe
   end
 
@@ -122,22 +119,14 @@ class Board
   end
 
   def display_board
-    puts
-    shade = :light_blue
-    @rows.each_with_index do |array, row|
-      shade = shade == :light_blue ? :light_green : :light_blue
-      array.each_index do |col|
-
-        if self[[row,col]].nil?
-          print "   ".colorize(:background => shade)
-        else
-          print " #{self[[row,col]].symbol} ".colorize(:background => shade)
-        end
+    @rows.map do |row|
         shade = shade == :light_blue ? :light_green : :light_blue
-      end
-    puts
+        row.map do |piece|
+          square = piece.nil? ? '   ' : " #{piece.render} "
+          square.colorize(:background => shade)
+        end.join
+      end.join("\n")
     end
-    nil
   end
-  nil
+
 end

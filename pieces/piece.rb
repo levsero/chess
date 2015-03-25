@@ -2,9 +2,7 @@
 class Piece
   attr_accessor :symbol, :color, :pos, :board
   def initialize(board, color, pos, symbol)
-    @board = board
-    @color = color
-    @pos = pos
+    @board, @color, @pos = board, color, pos;
     @symbol = symbol
   end
 
@@ -19,11 +17,11 @@ class Piece
 
   def move_into_check?(end_pos)
     dupe = board.dup
-
     dupe[@pos].move(end_pos)
-
     dupe.in_check?(color)
   end
+
+  private
 
   def dup(new_board)
     dup_piece = self.class.new(new_board, color, pos, symbol)
