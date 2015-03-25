@@ -1,101 +1,73 @@
-# encoding: utf-8
 class Slideable < Piece
   # Bishop, Queen, Rook
+  HORIZONTAL_DIRS = [
+    [-1, 0],
+    [0, -1],
+    [0, 1],
+    [1, 0]
+  ]
 
-  def initialize(board, color, pos, symbol, *directions) # :rows, :cols, :diags
-    super(board, color, pos, symbol)
-    @deltas = []
-    directions.each{ |dir| @deltas << dir }
+  DIAGONAL_DIRS = [
+    [-1, -1],
+    [-1, 1],
+    [1, -1],
+    [1, 1]
+  ]
+
+  def horizontal_dirs
+    HORIZONTAL_DIRS
   end
 
-  def pos_moves
-    possible_moves = []
+  def diagonal_dirs
+    DIAGONAL_DIRS
+  end
 
-    create_deltas.each_value do | delta |
-      delta.each do | direction |
-        direction.each do |tile|
-          if board[tile].nil?
-            possible_moves << tile
-          elsif board[tile].color != color
-            possible_moves << tile
-            break
-          else
-            break
-          end
-        end
-      end
+  def moves
+    moves = []
+
+    # loops through each direction getting all its pos moves
+    move_dirs.each do |dx, dy|
+      moves.concat(all_moves_in_dir(dx, dy))
     end
 
-    possible_moves
+    moves
   end
 
   def legal_moves
-    pos_moves.select {|pos_pos| !move_into_check?(pos_pos) }
+    moves.select { |pos| !move_into_check?(pos) }
   end
 
-  def create_deltas
-    direction_hash = {} #Hash.new{|h,k| h[k] = []}
-
-    direction_hash[:rows] = get_row if @deltas.include?(:rows)
-    direction_hash[:cols] = get_col if @deltas.include?(:cols)
-    direction_hash[:diags] = get_diags if @deltas.include?(:diags)
-
-    direction_hash
+  def render
+    symbol
   end
 
-  def get_row
-    row = Array.new(2) {[]}
-    @board.rows[@pos[0]].each_index do |col|
-      if col < @pos[1]
-        row[0] << [@pos[0], col]
-      elsif col > @pos[1]
-        row[1] << [@pos[0], col]
+  private
+
+  def move_dirs
+    # subclass implements this
+    raise NotImplementedError
+  end
+
+  def all_moves_in_dir(dx, dy)
+    cur_x, cur_y = pos
+    moves = []
+    loop do
+      cur_x, cur_y = cur_x + dx, cur_y + dy
+      pos = [cur_x, cur_y]
+
+      break unless board.valid_pos?(pos)
+
+      if board[pos].nil?
+        moves << pos
+      else
+        # can take an opponent's piece
+        moves << pos if board[pos].color != color
+
+        # can't move past blocking piece
+        break
       end
     end
-
-    # puts row[0] in order of closness
-    row[0].reverse!
-
-    row
-  end
-
-  def get_col
-    col = Array.new(2) {[]}
-    @board.rows.each_index do |row|
-      if row < @pos[0]
-        col[0] << [row, pos[1]]
-      elsif row > @pos[0]
-        col[1] << [row, pos[1]]
-      end
-    end
-
-    # puts col[0] in order of closeness
-    col[0].reverse!
-
-    col
-  end
-
-  def get_diags
-    diag = Array.new(4) {[]}
-
-    (1..7).each do |num|
-      diag[0] << [pos[0] + num, pos[1] + num]
-      diag[1] << [pos[0] - num, pos[1] - num]
-      diag[2] << [pos[0] - num, pos[1] + num]
-      diag[3] << [pos[0] + num, pos[1] - num]
-    end
-
-    # filter out of bounds
-    diag[0].select!{|el| el[0].between?(0,7) && el[1].between?(0,7)}
-    diag[1].select!{|el| el[0].between?(0,7) && el[1].between?(0,7)}
-    diag[2].select!{|el| el[0].between?(0,7) && el[1].between?(0,7)}
-    diag[3].select!{|el| el[0].between?(0,7) && el[1].between?(0,7)}
-
-    diag
-  end
-
-  def dup(new_board)
-    dup_piece = self.class.new(new_board, color, pos, symbol, *@deltas)
+    moves
   end
 
 end

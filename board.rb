@@ -20,6 +20,10 @@ class Board
     true
   end
 
+  def valid_pos?(pos)
+    pos.all? { |num| num.between?(0,7) }
+  end
+
   def check_mate?(color)
     game_over?(color) && in_check?(color)
   end
@@ -30,7 +34,7 @@ class Board
 
     # check every piece of opposite color's legal moves
     pieces(:color => color, :opp => true).each do |piece|
-      return true if piece.pos_moves.include?(king)
+      return true if piece.moves.include?(king)
     end
 
     false
@@ -46,7 +50,7 @@ class Board
 
     options[:color] = options[:color] == :black ? :white : :black if options[:opp]
 
-    @rows.flatten.select { †|tile| !tile.nil? &&
+    @rows.flatten.select { |tile| !tile.nil? &&
         (tile.color == options[:color] || options[:color] == :all) }
   end
 
@@ -86,44 +90,46 @@ class Board
   def create_rooks
     [[0,0], [0,7], [7,0], [7,7]].each do |pos|
       color = pos[0] == 0 ? :black  : :white
-      self[pos] = Slideable.new(self, color, [7,7], "\u{2656}", :rows, :cols)
+      self[pos] = Rook.new(self, color, [7,7])
     end
   end
 
   def create_knights
     [[0,1], [0,6], [7,1], [7,6]].each do |pos|
       color = pos[0] == 0 ? :black  : :white
-      board[pos] = Knight.new(self, color, [0,1], "\u{265E}")
+      self[pos] = Knight.new(self, color, [0,1])
     end
   end
 
   def create_bishops
     [[0,2], [0,5], [7,2], [7,5]].each do |pos|
     color = pos[0] == 0 ? :black  : :white
-    self[pos] = Slideable.new(self, color, [7,5], "\u{2657}", :diags)
+    self[pos] = Bishop.new(self, color, [7,5])
   end
 
   def create_queens
-    self[[0,3]] = Slideable.new(self, :black, [0,3], "\u{265B}", :rows, :cols, :diags)
-    self[[7,3]] = Slideable.new(self, :white, [7,3], "\u{2655}", :rows, :cols, :diags)
+    self[[0,3]] = Queen.new(self, :black, [0,3])
+    self[[7,3]] = Queen.new(self, :white, [7,3])
   end
 
   def create_kings
-    self[[0,4]] = King.new(self, :black, [0,4], "\u{265A}")
-    self[[7,4]] = King.new(self, :white, [7,4], "\u{2654}")
+    self[[0,4]] = King.new(self, :black, [0,4])
+    self[[7,4]] = King.new(self, :white, [7,4])
   end
 
   def create_pawns
-    @rows[1].each_index {|col| self[[1, col]] = Pawn.new(self, :black, [1,col], "\u{265F}")}
-    @rows[6].each_index {|col| self[[6, col]] = Pawn.new(self, :white, [6,col], "\u{2659}")}
+    @rows[1].each_index {|col| self[[1, col]] = Pawn.new(self, :black, [1,col])}
+    @rows[6].each_index {|col| self[[6, col]] = Pawn.new(self, :white, [6,col])}
   end
 
   def display_board
+    shade = nil;
     @rows.map do |row|
-        shade = shade == :light_blue ? :light_green : :light_blue
+      shade = shade == :light_blue ? :light_green : :light_blue
         row.map do |piece|
-          square = piece.nil? ? '   ' : " #{piece.render} "
-          square.colorize(:background => shade)
+          shade = shade == :light_blue ? :light_green : :light_blue
+          piece = piece.nil? ? '   ' : " #{piece.render} "
+          piece.colorize(:background => shade)
         end.join
       end.join("\n")
     end

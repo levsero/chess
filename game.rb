@@ -10,6 +10,7 @@ class Game
     @board = Board.new(true)
     get_players
     @turn = @player1
+    nil
   end
 
   def get_players
@@ -39,7 +40,7 @@ class Game
     puts "Let's play chess!"
     until board.game_over?(turn.color)
 
-      board.display_board
+      puts board.display_board
       begin
         puts "#{turn.color}'s move:"
         move = turn.get_move
@@ -53,7 +54,7 @@ class Game
       toggle_turn
     end
 
-    board.display_board
+    puts board.display_board
     check_result
   end
 
@@ -99,3 +100,6 @@ class HumanPlayer
     input
   end
 end
+
+g = Game.new
+g.play

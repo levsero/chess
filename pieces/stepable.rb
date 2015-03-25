@@ -1,10 +1,10 @@
 # encoding: utf-8
 class Stepable < Piece
-  def initialize(board, color, pos, symbol)
-    super(board, color, pos, symbol)
+  def initialize(board, color, pos)
+    super(board, color, pos)
   end
 
-  def pos_moves
+  def moves
     self.class::DELTAS.map do |delta|
       [delta[0] + pos[0], delta[1] + pos[1]]
     end.select do |pos|
@@ -15,6 +15,10 @@ class Stepable < Piece
   end
 
   def legal_moves
-    pos_moves.select {|pos_pos| !move_into_check?(pos_pos) }
+    moves.select {|pos_pos| !move_into_check?(pos_pos) }
+  end
+
+  def render
+    symbol
   end
 end
