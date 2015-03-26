@@ -90,21 +90,21 @@ class Board
   def create_rooks
     [[0,0], [0,7], [7,0], [7,7]].each do |pos|
       color = pos[0] == 0 ? :black  : :white
-      self[pos] = Rook.new(self, color, [7,7])
+      self[pos] = Rook.new(self, color, pos)
     end
   end
 
   def create_knights
     [[0,1], [0,6], [7,1], [7,6]].each do |pos|
       color = pos[0] == 0 ? :black  : :white
-      self[pos] = Knight.new(self, color, [0,1])
+      self[pos] = Knight.new(self, color, pos)
     end
   end
 
   def create_bishops
     [[0,2], [0,5], [7,2], [7,5]].each do |pos|
     color = pos[0] == 0 ? :black  : :white
-    self[pos] = Bishop.new(self, color, [7,5])
+    self[pos] = Bishop.new(self, color, pos)
   end
 
   def create_queens

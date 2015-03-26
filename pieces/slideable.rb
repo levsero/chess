@@ -33,10 +33,6 @@ class Slideable < Piece
     moves
   end
 
-  def legal_moves
-    moves.select { |pos| !move_into_check?(pos) }
-  end
-
   def render
     symbol
   end

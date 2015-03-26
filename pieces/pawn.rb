@@ -20,8 +20,8 @@ class Pawn < Piece
     end
 
     # filter for square on the board
-    legal_moves_array.select! do |legal_pos|
-      legal_pos[0].between?(0,7) && legal_pos[1].between?(0,7)
+    legal_moves_array.select! do |pos|
+      board.valid_pos?(pos)
     end
 
     # only move to nil squares
@@ -42,10 +42,6 @@ class Pawn < Piece
     attack_moves(modifier)
   end
 
-  def legal_moves
-    all_moves.select {|loc| !move_into_check?(loc) }
-  end
-
   def starting_pos?
     if color == :black
       return pos[0] == 1
@@ -60,8 +56,8 @@ class Pawn < Piece
     attack_moves << [1 * modifier + pos[0], pos[1] + 1]
     attack_moves << [1 * modifier + pos[0], pos[1] - 1]
 
-    attack_moves.select{ |loc| loc[1].between?(0,7) && loc[0].between?(0,7)}.select do |loca|
-      !board[loca].nil? && board[loca].color != @color
+    attack_moves.select{ |pos| board.valid_pos?(pos) }.select do |pos|
+      !board[pos].nil? && board[pos].color != @color
     end
   end
 

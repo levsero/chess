@@ -18,10 +18,14 @@ class Piece
   def move_into_check?(end_pos)
     dupe = board.dup
     dupe[@pos].move(end_pos)
-    dupe.in_check?(color)
+    dupe.in_check?(@color)
   end
-  
+
+  def legal_moves
+    moves.select{ |pos| !move_into_check?(pos)}
+  end
+
   def dup(new_board)
-    dup_piece = self.class.new(new_board, color, pos)
+    dup_piece = self.class.new(new_board, @color, pos)
   end
 end

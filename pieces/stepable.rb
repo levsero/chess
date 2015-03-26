@@ -14,10 +14,6 @@ class Stepable < Piece
     end
   end
 
-  def legal_moves
-    moves.select {|pos_pos| !move_into_check?(pos_pos) }
-  end
-
   def render
     symbol
   end

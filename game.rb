@@ -49,6 +49,7 @@ class Game
 
       rescue ArgumentError => e
         puts e
+        raise e
       retry
       end
       toggle_turn
