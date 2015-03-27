@@ -1,8 +1,6 @@
 # encoding: utf-8
 require_relative 'board'
-require_relative 'players/computer_player'
-require_relative 'players/computer_player2'
-require_relative 'players/human_player'
+require_relative 'players'
 
 class Game
   attr_reader :board, :player1, :player2
@@ -34,7 +32,7 @@ class Game
     if p2 == "y"
       @player2 = HumanPlayer.new(:black)
     else
-      @player2 = ComputerPlayer.new(:black, board)
+      @player2 = ComputerPlayer2.new(:black, board)
     end
   end
 

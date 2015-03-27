@@ -1,8 +1,6 @@
 # encoding: utf-8
 require_relative 'board'
-require_relative 'players/computer_player'
-require_relative 'players/computer_player2'
-require_relative 'players/human_player'
+require_relative 'players'
 
 class GameTest
   attr_reader :board, :player1, :player2
@@ -14,10 +12,15 @@ class GameTest
     @turn = @player1
   end
 
+  def get_players
+    @player1 = ComputerPlayer.new(:white, board)
+    @player2 = ComputerPlayer2.new(:black, board)
+  end
+
   def play
     puts "test"
     turns = 0
-    until board.game_over?(turn.color) || turns == 50
+    until board.game_over?(turn.color) || turns == 70
       begin
         move = turn.get_move
         board.move(move[0], move[1], turn.color)
@@ -48,19 +51,14 @@ class GameTest
     end
   end
 
-  def get_players
-    @player1 = ComputerPlayer.new(:white, board)
-    @player2 = ComputerPlayer2.new(:black, board)
-  end
-
-  def self.compare_comps
-    black, white, draw = 0, 0, 0
-    10.times do
+  def self.compare_comps(num)
+    results = Hash.new(0)
+    num.times do
       game = self.new
       result = game.play
-      p result
+      results[result] += 1
     end
+    p results
   end
-  nil
 end
-Game.compare_comps
+GameTest.compare_comps(ARGV[0].to_i)

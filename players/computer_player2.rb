@@ -17,14 +17,25 @@ class ComputerPlayer2
   end
 
   def calc_postion_rating(before_opp, before_cur, after_opp, after_cur)
-    points = before_opp.map{|piece| piece.value}.inject(:+) - after_opp.map{|piece| piece.value}.inject(:+)
+    points = calc_points(before_opp, after_opp)
 
+    mobility = calc_mobility(after_cur)
+
+    points * 5 + mobility
+  end
+
+  def calc_points(before_opp, after_opp)
+    before_opp.map{|piece| piece.value}.inject(:+) - after_opp.map{|piece| piece.value}.inject(:+)
+  end
+
+  def calc_mobility(after_cur)
     mob = 0
     mobility = after_cur.each do |piece|
-      mob += piece.moves.count
+      piece.moves.each do |move|
+        mob += 1
+      end
     end
-
-    points * 5 + mob
+    mob
   end
 
   def get_legal_moves(color = @color, board = @board)

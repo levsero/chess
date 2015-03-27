@@ -12,7 +12,7 @@ class Pawn < Piece
   end
 
   def legal_moves
-    all_moves.select{ |pos| !move_into_check?(pos)}
+    all_moves.select{ |pos| !move_into_check?(pos) }
   end
 
   def all_moves # overriding piece method
@@ -31,14 +31,8 @@ class Pawn < Piece
     end
 
     # only move to nil squares
-    legal_moves_array.select!{|legal_pos| board[legal_pos].nil?}
-
-
+    legal_moves_array.select!{ |legal_pos| board[legal_pos].nil? }
     all_moves = legal_moves_array.concat(attack_moves(modifier))
-
-    # if pos[0] == 7 || pos[0] == 0
-    #   all_moves = []
-    # end
 
     all_moves
   end

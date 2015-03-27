@@ -11,6 +11,9 @@ class Board
   end
 
   def game_over?(color)
+    # game over if only kings left
+    return true if pieces.count == 2
+
     pieces(:color => color).each do |piece|
       if !piece.legal_moves.empty?
         #p piece.symbol
@@ -56,7 +59,7 @@ class Board
 
   def move(start_pos, end_pos, turn_color)
     raise ArgumentError.new("No piece at start position") if self[start_pos].nil?
-    raise ArgumentError.new("Illegal move") if !self[start_pos].legal_moves.include?(end_pos)
+    raise ArgumentError.new("Illegal move #{start_pos}, #{end_pos}") if !self[start_pos].legal_moves.include?(end_pos)
     raise ArgumentError.new("Not your piece") if self[start_pos].color != turn_color
 
     self[start_pos].move(end_pos)
