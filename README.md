@@ -7,7 +7,7 @@ To play a regular game load the Game.rb file (e.g.ruby game.rb).
 To run a comparison of the 2 computer AI's load the game\_test.rb file with a command line arg for how many test games should be played (e.g.ruby game_test.rb 10).
 
 ### Features
-A regular [game](game.rb) let's you choose any combination of computer and human players. The Game class is designed as an api that allows both types of players to interface with it.
+A regular [game](game.rb) let's you choose any combination of computer and human players (white computer will be the stronger AI, black the weaker). The Game class is designed as an api that allows both types of players to interface with it.
 
 The [human player](players/human_player.rb) inputs his moves using proper chess co-ords (e.g e2, e4) which are then converted into the array co-ords
 
