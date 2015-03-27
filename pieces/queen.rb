@@ -3,6 +3,10 @@ class Queen < Slideable
     color == :white ? '♕' : '♛'
   end
 
+  def value
+    8
+  end
+
   protected
 
   def move_dirs

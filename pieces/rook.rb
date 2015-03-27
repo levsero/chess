@@ -3,6 +3,10 @@ class Rook < Slideable
     color == :white ? '♖' : '♜'
   end
 
+  def value
+    5
+  end
+
   protected
 
   def move_dirs

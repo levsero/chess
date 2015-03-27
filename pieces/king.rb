@@ -6,4 +6,8 @@ class King < Stepable
   def symbol
      color == :white ? '♔' : '♚'
   end
+
+  def value
+    0
+  end
 end

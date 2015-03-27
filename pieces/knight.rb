@@ -6,4 +6,8 @@ class Knight < Stepable
   def symbol
    color == :white ? '♘' : '♞'
   end
+
+  def value
+    3
+  end
 end

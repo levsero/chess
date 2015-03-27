@@ -1,12 +1,18 @@
 # encoding: utf-8
 class Pawn < Piece
+  attr_reader :value
 
   def initialize(board, color, pos)
     super(board, color, pos)
+    @value = 1;
   end
 
   def render
     color == :white ? "♙" : "♟"
+  end
+
+  def legal_moves
+    all_moves.select{ |pos| !move_into_check?(pos)}
   end
 
   def all_moves # overriding piece method
@@ -15,7 +21,7 @@ class Pawn < Piece
 
     legal_moves_array << [1 * modifier + pos[0], pos[1]]
 
-    if starting_pos?
+    if starting_pos? && @board[[1 * modifier + pos[0], pos[1]]].nil?
       legal_moves_array << [2 * modifier + pos[0], pos[1]]
     end
 

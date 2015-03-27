@@ -1,4 +1,9 @@
 class Bishop < Slideable
+
+  def value
+    3
+  end
+
   def symbol
     color == :white ? '♗' : '♝'
   end
