@@ -22,5 +22,5 @@ The AI currently accounts for piece mobility, pieces captured, and the opponents
 
 ### Rules not yet implemented
 en passent and castling
-stalemate if only kings, board position repeats 3 times, and 50 move rule (no capture or pawn moved).
+board position repeats 3 times, and 50 move rule (no capture or pawn moved).
 
