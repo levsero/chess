@@ -11,11 +11,11 @@ class Pawn < Piece
     color == :white ? "♙" : "♟"
   end
 
-  # def value
-    # end_row = color == :white ? 0 : 7
-    # @value *= 3 if end_row - pos[0] < 3
-    # @value
-  # end
+  def value
+    end_row = color == :white ? 0 : 7
+    @value *= 3 if (end_row - pos[0]).abs < 3
+    @value
+  end
 
   def legal_moves
     all_moves.select{ |pos| !move_into_check?(pos) }
