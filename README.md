@@ -20,7 +20,7 @@ A special game mode, [game_test](game_test.rb) especially created for comparing 
 The [Piece](pieces/piece.rb) class uses polymorphic methods and inheritance with Slideable and Stepable inherritting from Piece and the individual types of pieces inheritting from them in turn.
 
 ### Computer AI
-Contains two seperate computer players, one with a more basic AI which is used for testing against with the second more powerful AI. 
+Contains two seperate computer players, one with a more basic AI which is used for testing against the second more powerful AI. 
 
 The AI allocates a score to each possible move accounting for piece mobility and pieces captured, minus the score of opponents best response. Chooses the move with the highest score.
 
