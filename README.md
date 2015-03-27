@@ -18,7 +18,8 @@ A special game mode, [game_test](game_test.rb) especially created for comparing 
 The [Piece](pieces/piece.rb) class uses polymorphic methods and inheritance with Slideable and Stepable inherritting from Piece and the individual types of pieces inheritting from them in turn.
 
 ### Computer AI
-The AI currently accounts for piece mobility, pieces captured, and the opponents best response. In mobility more weight is given to the central squares with less weight given to the side columns.
+The AI gives a score to each possible move accounting for piece mobility and pieces captured, minus the score of opponents best response. 
+For mobility extra weight is given to the central squares with less weight given to the side columns.
 
 ### Rules not yet implemented
 en passent and castling
