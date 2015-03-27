@@ -1,9 +1,10 @@
 class ComputerPlayer
   attr_accessor :color
 
-  def initialize(color, board)
+  def initialize(color, board, recurse = 1)
     @board = board
     @color = color
+    @recurse = recurse
   end
 
   def get_move
@@ -11,15 +12,16 @@ class ComputerPlayer
     select_best_move(moves)[0]
   end
 
-  def select_best_move(moves, recurse = true, color = @color, board = @board)
-    best_value = 0
+  def select_best_move(moves, recurse = @recurse, color = @color, board = @board)
+    best_value = -50
     best_move = nil
+    best_moves = []
 
     # iterate through each move to find best one
     moves.each do |from, move_set|
       move_set.each do |move|
 
-        # gets piece array from before move being tested
+        # gets piece arrays for both colors from before move being tested
         before_opp = board.pieces(color: color, opp: true)
         before_cur = board.pieces(color: color)
 
@@ -27,37 +29,38 @@ class ComputerPlayer
         dup = board.dup
         dup.move(from, move, color)
 
+        # check for check_mate
         opp_color = color == :white ? :black : :white
         return [[from, move], 1000] if dup.check_mate?(opp_color)
 
-        # gets piece array from after move being tested
+        # gets piece array for both colors from after move being tested
         after_opp = dup.pieces(color: color, opp: true)
-        after_cur = dup.pieces(color: color, opp: true)
+        after_cur = dup.pieces(color: color)
 
+        # get piece type
+        piece = board[from].class
         # calc position rating
-        rating = calc_postion_rating(before_opp, before_cur, after_opp, after_cur)
+        rating = calc_postion_rating(before_opp, before_cur, after_opp, after_cur, piece)
 
-        # slightly prioritize pawn movement
-        if board[from].class == Pawn
-          rating += .5
-        end
-
-        # calc opp player best response
-        if recurse
+        #calc opp player best response
+        if recurse > 0
             opp_color = (@color == :black) ? :white : :black
             moves = get_legal_moves(opp_color, dup)
             # p moves.keys
-            opp = select_best_move(moves, false, opp_color, dup)[1]
+            opp = select_best_move(moves, recurse - 1, opp_color, dup)[1]
 
             # prevent stalemate when have other options
             opp = 100 if moves.length == 0
+            # p  rating
 
             rating -= opp
+            # p rating
         end
 
         # updates best move if better than current best move
         if rating > best_value || best_move.nil?
           best_value, best_move = rating, [from, move]
+          best_moves << best_move
         elsif rating == best_value
           #randomizes best move if equal
           #TODO if multiple equal 50% last one
@@ -65,11 +68,16 @@ class ComputerPlayer
         end
       end
     end
+    # p "best:#{best_value}"
     # puts moves.length if !recurse
     [best_move, best_value]
   end
 
-  def calc_postion_rating(before_opp, before_cur, after_opp, after_cur)
+  def calc_postion_rating(before_opp, before_cur, after_opp, after_cur, piece_class)
+    # TODO technincal upgrades
+    # increase value of bishops slightly if still have 2 bishops
+    # queens early game reduce mobility points
+
     points = calc_points(before_opp, after_opp)
 
     mobility = calc_mobility(after_cur)
@@ -83,15 +91,12 @@ class ComputerPlayer
 
   def calc_mobility(after_cur)
     mob = 0
-    mobility = after_cur.each do |piece|
+    after_cur.each do |piece|
       piece.moves.each do |move|
         if move.all?{|pos| pos.between?(2, 5)}
           mob += 1.5
         elsif move.any?{|pos| pos == 0 || pos == 7}
           mob += 0.5
-        elsif move.any?{|pos| pos < 0 || pos > 7}
-          # appears as if pawns can include invalid moves in their all moves
-          mob += 0
         else
           mob += 1
         end
@@ -116,20 +121,4 @@ class ComputerPlayer
     move = moves[pos].sample
     [pos, move]
   end
-
-  def find_checkmate(moves)
-    moves.each do |pos, moves_arr|
-      moves_arr.each do |end_move|
-
-        # dup board instead of trying to reverse
-        dupe = @board.dup
-        dupe[pos].move(end_move)
-        opp_color = color == :white ? :black : :white
-
-        return [pos, end_move] if dupe.check_mate?(opp_color)
-      end
-    end
-    nil
-  end
-
 end
