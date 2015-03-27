@@ -2,7 +2,7 @@
 require_relative 'board'
 require_relative 'players'
 
-class Game
+class GameTest
   attr_reader :board, :player1, :player2
   attr_accessor :turn
 
@@ -10,41 +10,19 @@ class Game
     @board = Board.new(true)
     get_players
     @turn = @player1
-    nil
   end
 
   def get_players
-    puts "Player 1 human?(y/n)"
-    p1 = gets.chomp.downcase
-
-    puts "Player 2 human?(y/n)"
-    p2 = gets.chomp.downcase
-
-    create_players(p1, p2)
-  end
-
-  def create_players(p1, p2)
-    if p1 == "y"
-      @player1 = HumanPlayer.new(:white)
-    else
-      @player1 = ComputerPlayer.new(:white, board)
-    end
-    if p2 == "y"
-      @player2 = HumanPlayer.new(:black)
-    else
-      @player2 = ComputerPlayer2.new(:black, board)
-    end
+    @player1 = ComputerPlayer.new(:white, board)
+    @player2 = ComputerPlayer2.new(:black, board)
   end
 
   def play
-    puts "Let's play chess!"
-    until board.game_over?(turn.color)
-
-      puts board.display_board
+    puts "test"
+    turns = 0
+    until board.game_over?(turn.color) || turns == 70
       begin
-        puts "#{turn.color}'s move:"
         move = turn.get_move
-
         board.move(move[0], move[1], turn.color)
 
       rescue ArgumentError => e
@@ -53,9 +31,8 @@ class Game
       retry
       end
       toggle_turn
+      turns += 1
     end
-
-    puts board.display_board
     check_result
   end
 
@@ -73,7 +50,15 @@ class Game
       return "draw"
     end
   end
-end
 
-g = Game.new
-g.play
+  def self.compare_comps(num)
+    results = Hash.new(0)
+    num.times do
+      game = self.new
+      result = game.play
+      results[result] += 1
+    end
+    p results
+  end
+end
+GameTest.compare_comps(ARGV[0].to_i)

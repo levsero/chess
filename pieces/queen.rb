@@ -1,9 +1,10 @@
-class Queen < Piece
-  include slideable
+class Queen < Slideable
+  def symbol
+    color == :white ? '♕' : '♛'
+  end
 
-  def initialize
-    super(board, color, pos)
-    @symbol = @color == :white ? "\u{2655}" : "\u{265B}"
+  def value
+    8
   end
 
   protected
