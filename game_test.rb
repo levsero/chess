@@ -1,6 +1,6 @@
 # encoding: utf-8
-require_relative 'board'
-require_relative 'players'
+require_relative 'lib/board'
+require_relative 'lib/players'
 
 class GameTest
   attr_reader :board, :player1, :player2
